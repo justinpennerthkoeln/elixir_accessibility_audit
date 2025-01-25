@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        div {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin: 10px;
+        }
+
+        div > p {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard</h1>
+    <%= for api_key <- @api_keys do %>
+        <div>
+            <p>Key: <%= api_key.api_key %></p>
+            <p>Created at: <%= api_key.inserted_at %></p>
+        </div>
+    <%= end %>
+
+    <div>
+        <form action="/api_keys" method="post" id="create-api-key">
+            <input type="hidden" name="user_id" value={@user_id}>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+            <button type="submit">Create New Key</button>
+        </form>
+    </div>
+    
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const token = JSON.parse(window.localStorage.getItem('token'));
+
+        if(token != null && token.timestamp + 3600000 < Date.now()) {
+            window.localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+
+        if(token == null) {
+            window.location.href = '/login';
+        }
+
+        document.getElementById('create-api-key').addEventListener('submit', function (e) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            const userId = document.querySelector('input[name="user_id"]').value;
+            e.preventDefault();
+            fetch('/api/api_keys/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-csrf-token': csrfToken
+                },
+                body: JSON.stringify({
+                    user_id: userId
+                })
+            }).then(response => response.json())
+            .then(data => {
+                if(data.success == true) {
+                    div = document.createElement('div');
+                    div.innerHTML = `<p>Key: ${data.api_key}</p><p>Created at: ${data.inserted_at}</p>`;
+                    document.body.insertBefore(div, document.querySelector('div'));
+                } else {
+                    alert("Something went wrong!");
+                    window.location.reload();
+                }
+            });
+        });
+    });
+
+</script>
+</html>

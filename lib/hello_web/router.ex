@@ -14,27 +14,34 @@ defmodule HelloWeb.Router do
     plug :accepts, ["json"]
   end
 
-  # scope "/", HelloWeb do
-  #   pipe_through :browser
-
-  #   get "/", PageController, :home
-  #   get "/test/:id", PageController, :test
-  # end
-
   # Other scopes may use custom stacks.
   scope "/api", HelloWeb do
     pipe_through :api
     get "/audit/:id", PageController, :test
     post "/audit/:id", PageController, :test
+
+    # Scope for the users
+    get "/users", UserController, :users
+    # get "/users/:user_key", UserController, :user
+    post "/users/create", UserController, :create_user
+
+    # Scope for the api-keys
+    get "/api_keys", KeyController, :api_keys
+    post "/api_keys/create", KeyController, :create_api_key
+  end
+
+  scope "/", HelloWeb do
+    pipe_through :browser
+
+    get "/register", UserController, :register
+    get "/login", UserController, :login
+    post "/register", UserController, :create_user
+    post "/login", UserController, :check_credentials
+    get "/dashboard", PageController, :dashboard
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:hello, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do

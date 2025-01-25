@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>API - Register</title>
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+            margin: 0 auto;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input {
+            margin-top: 5px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+        p {
+            margin-top: 10px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <form action="/login" method="post" id="login-form">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+        <label for="email">E-Mail</label>
+        <input type="email" id="email">
+        <label for="password">Password</label>
+        <input type="password" id="password">
+        <p id="error-msg" hidden></p>
+        <button type="submit">Login</button>
+    </form>
+    
+</body>
+<script>
+    const uuid = crypto.randomUUID();
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const token = JSON.parse(window.localStorage.getItem('token'));
+        if(token == null) {
+            return;
+        }
+        if(token.timestamp + 3600000 < Date.now()) {
+            window.localStorage.removeItem('token');
+        } else {
+            window.localStorage.setItem('token', JSON.stringify(token));
+            window.location.href = '/dashboard?user_key=' + token.user_key;
+        }
+    });
+
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent default form submission
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        const errorVisualizer = document.getElementById('error-msg');
+        
+        errorVisualizer.hidden = true;
+
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-csrf-token': csrfToken,
+            },
+            body: JSON.stringify({ email, password }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success == true) {
+                console.log(data.user)
+                window.localStorage.setItem('token', JSON.stringify({sessionToken: uuid, timestamp: Date.now(), user_key: data.user.uuid}));
+                window.location.href = '/dashboard?user_key=' + data.user.uuid;
+            } else {
+                errorVisualizer.innerText = data.message;
+                errorVisualizer.hidden = false;
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    });
+    
+</script>
+</html>

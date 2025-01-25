@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  postgresql:
+    image: postgres:13
+    container_name: elixir_api
+    restart: always
+    environment:
+      POSTGRES_HOST: "localhost"
+      POSTGRES_DB: "elixir_api"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/create.sql:/docker-entrypoint-initdb.d/create.sql
+
+volumes:
+  postgres_data:
