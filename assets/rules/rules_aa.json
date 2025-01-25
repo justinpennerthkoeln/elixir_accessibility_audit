@@ -1,0 +1,73 @@
+[
+    {
+        "name": "captions",
+        "tags": [
+            "video"
+        ],
+        "msg": "All live video content must have synchronized captions",
+        "heading": "Provide Synchronized Captions for Video Content",
+        "description": "This requirement ensures accessibility for users who are deaf or hard of hearing, allowing them to understand live audio effectively.",
+        "wcag": "1.2.4 Captions (Live) (AA) https://www.w3.org/TR/WCAG22/#captions-live",
+        "url": "https://www.w3.org/TR/WCAG22/#captions-live",
+        "wcagClass": "AA",
+        "regex": "<tag[^>]*?>(?:(?!<track(\\s|\n)*?kind=\"(captions|\\s*)\"(\\s|\n)*?>)[^^]*?)<\/tag>>",
+        "fixable": false
+    },
+    {
+        "name": "subtitles",
+        "tags": [
+            "video"
+        ],
+        "msg": "All live video content must have synchronized subtitles",
+        "heading": "Provide Synchronized Captions for Video Content",
+        "description": "This requirement ensures accessibility for users who are deaf or hard of hearing, allowing them to understand live audio effectively.",
+        "wcag": "1.2.4 Captions (Live) (AA) https://www.w3.org/TR/WCAG22/#captions-live",
+        "url": "https://www.w3.org/TR/WCAG22/#captions-live",
+        "wcagClass": "AA",
+        "regex": "<tag[^>]*?>(?:(?!<track(\\s|\n)*?kind=\"(subtitles|\\s*)\"(\\s|\n)*?>)[^^]*?)<\/tag>>",
+        "fixable": false
+    },
+    {
+        "name": "captions",
+        "tags": [
+            "audio"
+        ],
+        "msg": "All live audio content must have synchronized captions",
+        "heading": "Provide Synchronized Captions for Live Audio Content",
+        "description": "This requirement ensures accessibility for users who are deaf or hard of hearing, allowing them to understand live audio effectively.",
+        "wcag": "1.2.4 Captions (Live) (AA) https://www.w3.org/TR/WCAG22/#captions-live",
+        "url": "https://www.w3.org/TR/WCAG22/#captions-live",
+        "wcagClass": "AA",
+        "regex": "<tag[^>]*?>(?:(?!<track(\\s|\n)*?kind=\"(captions|\\s*)\"(\\s|\n)*?>)[^^]*?)<\/tag>>",
+        "fixable": false
+    },
+    {
+        "name": "subtitles",
+        "tags": [
+            "audio"
+        ],
+        "msg": "All live audio content must have synchronized subtitles",
+        "heading": "Provide Synchronized Captions for Live Audio Content",
+        "description": "This requirement ensures accessibility for users who are deaf or hard of hearing, allowing them to understand live audio effectively.",
+        "wcag": "1.2.4 Captions (Live) (AA) https://www.w3.org/TR/WCAG22/#captions-live",
+        "url": "https://www.w3.org/TR/WCAG22/#captions-live",
+        "wcagClass": "AA",
+        "regex": "<tag[^>]*?>(?:(?!<track(\\s|\n)*?kind=\"(subtitles|\\s*)\"(\\s|\n)*?>)[^^]*?)<\/tag>>",
+        "fixable": false
+    },
+    {
+        "name": "No empty kind attribute in track",
+        "tags": [
+            "audio",
+            "video"
+        ],
+        "msg": "All live audio content must have synchronized captions",
+        "heading": "Provide Synchronized Captions for Live Audio Content",
+        "description": "This requirement ensures accessibility for users who are deaf or hard of hearing, allowing them to understand live audio effectively.",
+        "wcag": "1.2.4 Captions (Live) (AA) https://www.w3.org/TR/WCAG22/#captions-live",
+        "url": "https://www.w3.org/TR/WCAG22/#captions-live",
+        "wcagClass": "AA",
+        "regex": "<tag[^>]*?>(?:(?!<track(\\s|\n)*?kind=\"[a-zA-Z0-9]+?\"(\\s|\n)*?>)[^^]*?)<\/tag>",
+        "fixable": false
+    }
+]

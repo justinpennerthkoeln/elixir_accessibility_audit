@@ -1,0 +1,68 @@
+[
+    {
+         "name": "Video Control",
+         "tags": [
+             "video"
+         ],
+         "msg": "Provide audio descriptions or text alternatives for prerecorded media",
+         "heading": "Provide Alternatives for Prerecorded Media Content",
+         "description": "This ensures that users with visual or auditory impairments can access essential information in the media.",
+         "wcag": "1.2.3 Audio Description or Media Alternative (Prerecorded) (A) https://www.w3.org/TR/WCAG22/#audio-description-or-media-alternative-prerecorded",
+         "url": "https://www.w3.org/TR/WCAG22/#audio-description-or-media-alternative-prerecorded",
+         "wcagClass": "A",
+         "regex": "<video(?:(?!controls)[^>])*>(.|\n|\\s)*?<\/video>",
+         "fixable": false
+     },{
+        "name": "Volume Control",
+        "tags": [
+            "video"
+        ],
+        "msg": "Provide users control over audio content, including volume and playback",
+        "heading": "Provide Controls for Automatically Playing Audio Longer Than 3 Seconds",
+        "description": "This rule is essential to prevent interference with screen readers and to give users control over their audio experience.",
+        "wcag": "1.4.2 Audio Control (A) https://www.w3.org/TR/WCAG22/#audio-control",
+        "url": "https://www.w3.org/TR/WCAG22/#audio-control",
+        "wcagClass": "A",
+        "regex": "<video(?:(?!controls)[^>])*>(.|\n|\\s)*?<\/video>",
+        "fixable": false
+    },{
+        "name": "Keyboard Control",
+        "tags": [
+            "video"
+        ],
+        "msg": "Provide users control over audio content, including volume and playback",
+        "heading": "Ensure Keyboard-Only Focus Navigation with Clear Exit Methods",
+        "description": "This rule is vital for users relying on keyboards, allowing them to navigate and exit components smoothly without requiring a mouse.",
+        "wcag": " 2.1.2 No Keyboard Trap (A) https://www.w3.org/TR/WCAG22/#no-keyboard-trap",
+        "url": "https://www.w3.org/TR/WCAG22/#no-keyboard-trap",
+        "wcagClass": "A",
+        "regex": "<video(?:(?!controls)[^>])*>(.|\n|\\s)*?<\/video>",
+        "fixable": false
+    },{
+        "name": "Unique Title",
+        "tags": [
+            "title"
+        ],
+        "msg": "Each page should have a unique and descriptive title",
+        "heading": "Provide Descriptive Titles for Web Pages",
+        "description": "This rule ensures that users can easily understand the topic or purpose of a page, enhancing navigation and usability.",
+        "wcag": "2.4.2 Page Titled (A) https://www.w3.org/TR/WCAG22/#page-titled",
+        "url": "https://www.w3.org/TR/WCAG22/#page-titled",
+        "wcagClass": "A",
+        "regex": "<title[^>]*?>(\\s*|Document|document|Documents|documents|Index|index)*<\/title>",
+        "fixable": true
+    },{
+        "name": "Specified Language of Page",
+        "tags": [
+            "html"
+        ],
+        "msg": "Specify the language of the entire page",
+        "heading": "Specify the Default Language of Each Web Page",
+        "description": "This rule is crucial for accessibility, allowing assistive technologies to properly interpret and present content in the correct language.",
+        "wcag": "3.1.1 Language of Page (A) https://www.w3.org/TR/WCAG22/#language-of-page",
+        "url": "https://www.w3.org/TR/WCAG22/#language-of-page",
+        "wcagClass": "A",
+        "regex": "<html(?:(?!\\s*lang\\s*=\"([a-zA-Z]|-)+\")[^>])*?>(.|\n)*?<\/html>",
+        "fixable": true
+    }
+]
