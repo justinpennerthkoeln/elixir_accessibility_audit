@@ -38,4 +38,33 @@ defmodule HelloWeb.KeyController do
         |> json(%{success: false, info: "An error occurred"})
     end
   end
+
+  def delete_api_key(conn, %{"id" => id}) do
+    try do
+      case Repo.get(ApiKey, id) do
+        nil ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> json(%{success: false, info: "Api key not found"})
+
+        api_key ->
+          case Repo.delete(api_key) do
+            {:ok, _} ->
+              conn
+              |> put_status(:ok)
+              |> json(%{success: true, info: "Api key deleted"})
+
+            {:error, _} ->
+              conn
+              |> put_status(:unprocessable_entity)
+              |> json(%{success: false, info: "Failed to delete api key"})
+          end
+      end
+    rescue
+      _e ->
+        conn
+        |> put_status(:internal_server_error)
+        |> json(%{success: false, info: "An error occurred"})
+    end
+  end
 end

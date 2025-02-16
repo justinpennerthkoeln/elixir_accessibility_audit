@@ -5,37 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/assets/css/reset.css">
-    <link rel="stylesheet" href="/assets/css/root.css">
+    <link rel="stylesheet" href="/assets/dashboard.css">
+    <link rel="stylesheet" href="/assets/root.css">
     <link rel="stylesheet" href="/assets/app.css">
-    <link rel="stylesheet" href="/assets/css/header.css">
-    <link rel="stylesheet" href="/assets/css/dashboard.css">
+    <link rel="stylesheet" href="/assets/dashboard.css">
 </head>
 <body>
-    <!--
-    <div id="heading-bar">
-        <div id="user-info">
-            <img src="/assets/user.svg" alt="User Icon">
-            <p>username</p>
-            <p>API Keys</p>
-            <a href="/logout" class="right">Logout</a>
-        </div>
-        <hr>
-        <nav>
-            <ul>
-                <li><a href="/dashboard">API Keys</a></li>
-                <li><a href="/analytics">Analytics</a></li>
-                <li><a href="/settings">Settings</a></li>
-            </ul>
-        </nav>
-        <hr>
-    </div>
-    -->
+    <div id="heading-bar"></div>
 
     <section id="dashboard">
         <h1>API Keys</h1>
         <p>Manage your API Keys here</p>
-        <div id="api-keys">
+        <div>
             <div id="api-keys-header">
                 <h2>Your API keys</h2>
                 <form action="/api_keys" method="post" id="create-api-key">
@@ -45,12 +26,10 @@
                 </form>
             </div>
 
-            <hr>
-
             <%= for api_key <- @api_keys do %>
-                <div class="api-key">
-                    <p><%= api_key.api_key %></p>
-                    <p><%= api_key.inserted_at %></p>
+                <div>
+                    <p>Key: <%= api_key.api_key %></p>
+                    <p>Created at: <%= api_key.inserted_at %></p>
                     <button value={api_key.id} class="del-btn">Delete</button>
                 </div>
             <% end %>

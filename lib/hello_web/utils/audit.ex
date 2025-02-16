@@ -1,10 +1,11 @@
 defmodule HelloWeb.Audit do
+
   def doAudit(rules, content) do
     initial_state = %{counter: 0, matches: [], content: content}
 
     Enum.reduce(rules, initial_state, fn rule, acc ->
       # internalHierarchy
-      internalHierarchy = if rule["rule_type"] == "internal hierarchy" do
+      acc = if rule["rule_type"] == "internal hierarchy" do
         Enum.reduce(rule["tags"], acc, fn tag, acc_inner ->
           auditInternalHierarchy(rule, tag, acc_inner)
         end)
@@ -12,24 +13,25 @@ defmodule HelloWeb.Audit do
         acc
       end
 
-      # linking
-      auditLinking = if rule["rule_type"] == "linking" do
-        Enum.reduce(rule["tags"], internalHierarchy, fn tag, acc_inner ->
+      # Linking processing
+      acc = if rule["rule_type"] == "linking" do
+        Enum.reduce(rule["tags"], acc, fn tag, acc_inner ->
           auditLinking(rule, tag, acc_inner)
         end)
       else
         acc
       end
 
-      # rules without specific type
-      auditResult = if rule["rule_type"] == nil do
-        Enum.reduce(rule["tags"], auditLinking, fn tag, acc_inner ->
+      # Rules without specific type
+      acc = if rule["rule_type"] == nil do
+        Enum.reduce(rule["tags"], acc, fn tag, acc_inner ->
           audit(rule, tag, acc_inner)
         end)
       else
-        internalHierarchy
+        acc
       end
-      auditResult
+
+      acc
     end)
     |> addLineNumber()
   end
@@ -44,193 +46,49 @@ defmodule HelloWeb.Audit do
     |> Enum.reduce(acc, fn match, acc_inner ->
       content = Enum.at(match, 0) |> String.replace(~r{#{regex_replace}}, "")
       if !String.match?(content, ~r{#{regex_check_content}}) do
-        if String.contains?(Enum.at(match, 0), "#{identifier}") do
-          updated_content = String.replace(Enum.at(match, 0), ~r{[0-9,]+}, fn current ->
-            current_in_array = String.split(current, ",") |> Enum.map(&String.to_integer/1)
-            Enum.join(current_in_array ++ [acc_inner.counter], ",")
-          end)
-
-          concatinatedMatch = %{
-            identifier: "#{identifier}",
-            issue: rule["msg"],
-            content: Enum.at(match, 0),
-            dataAttributeId: acc_inner.counter,
-            contentWithIdentifier: updated_content,
-            wcag: rule["wcag"],
-            wcagClass: rule["wcagClass"],
-            url: rule["url"],
-            heading: rule["heading"],
-            description: rule["description"],
-            fixable: rule["fixable"]
-          }
-
-          update_state(
-            %{
-              counter: acc_inner.counter + 1,
-              matches: acc_inner.matches ++ [concatinatedMatch],
-              content: String.replace(acc_inner.content, Enum.at(match, 0), updated_content)
-            }, acc_inner
-          )
-        else
-          updated_content = String.replace(Enum.at(match, 0), ~r{(<[^\/>]*?)>}, "\\1 #{identifier}=\"#{acc_inner.counter}\">")
-
-          concatinatedMatch = %{
-            identifier: "#{identifier}",
-            issue: rule["msg"],
-            content: Enum.at(match, 0),
-            dataAttributeId: acc_inner.counter,
-            contentWithIdentifier: updated_content,
-            wcag: rule["wcag"],
-            wcagClass: rule["wcagClass"],
-            url: rule["url"],
-            heading: rule["heading"],
-            description: rule["description"],
-            fixable: rule["fixable"]
-          }
-
-          update_state(
-            %{
-              counter: acc_inner.counter + 1,
-              matches: acc_inner.matches ++ [concatinatedMatch],
-              content: String.replace(acc_inner.content, Enum.at(match, 0), updated_content)
-            }, acc_inner
-          )
-        end
+        appendError(identifier, match, rule, acc_inner)
       else
         acc_inner
       end
     end)
   end
 
-  # TODO: Add image stuff
+  # TODO: Solve the issue with label and image data-attribute. (The issue is, that the data-attribute gets added to start and end tag)
   defp audit(rule, tag, acc) do
     regex = rule["regex"] |> String.replace(~r{tag}, tag)
     identifier = "data-audit-error" # rule["identifier"]
 
     Regex.scan(~r{#{regex}}, acc.content)
     |> Enum.reduce(acc, fn match, acc_inner ->
-      if String.contains?(Enum.at(match, 0), identifier) do
-        updated_content = String.replace(Enum.at(match, 0), ~r{[0-9,]+}, fn current ->
-          current_in_array = String.split(current, ",") |> Enum.map(&String.to_integer/1)
-          Enum.join(current_in_array ++ [acc_inner.counter], ",")
-        end)
-
-        concatinatedMatch = %{
-          identifier: "#{identifier}",
-          issue: rule["msg"],
-          content: Enum.at(match, 0),
-          dataAttributeId: acc_inner.counter,
-          contentWithIdentifier: updated_content,
-          wcag: rule["wcag"],
-          wcagClass: rule["wcagClass"],
-          url: rule["url"],
-          heading: rule["heading"],
-          description: rule["description"],
-          fixable: rule["fixable"]
-        }
-
-        update_state(
-          %{
-            counter: acc_inner.counter + 1,
-            matches: acc_inner.matches ++ [concatinatedMatch],
-            content: String.replace(acc_inner.content, Enum.at(match, 0), updated_content)
-          }, acc_inner
-        )
-      else
-        updated_content = String.replace(Enum.at(match, 0), ~r{(<[^\/>]*?)>}, "\\1 data-audit-error=\"#{acc_inner.counter}\">")
-
-        concatinatedMatch = %{
-          identifier: identifier,
-          issue: rule["msg"],
-          content: Enum.at(match, 0),
-          dataAttributeId: acc_inner.counter,
-          contentWithIdentifier: updated_content,
-          wcag: rule["wcag"],
-          wcagClass: rule["wcagClass"],
-          url: rule["url"],
-          heading: rule["heading"],
-          description: rule["description"],
-          fixable: rule["fixable"]
-        }
-
-
-        update_state(
-          %{
-            counter: acc_inner.counter + 1,
-            matches: acc_inner.matches ++ [concatinatedMatch],
-            content: String.replace(acc_inner.content, Enum.at(match, 0), updated_content)
-          }, acc_inner
-        )
-      end
+      appendError(identifier, match, rule, acc_inner)
     end)
   end
 
   defp auditLinking(rule, tag, acc) do
     regex = rule["regex"] |> String.replace(~r{tag}, tag)
+    regex_get_link = rule["regex_get_link"]
+    regex_check_link = rule["regex_check_link"]
     identifier = "data-audit-error" # rule["identifier"]
 
     Regex.scan(~r{#{regex}}, acc.content)
     |> Enum.reduce(acc, fn match, acc_inner ->
-
-      # TODO: Something is wrong. The linkId is not being set correctly (cause not only the label is "linking")
-      linkId = String.split(Enum.at(match, 0), "for=\"") |> Enum.at(1) |> String.split("\"") |> Enum.at(0)
-      if linkId != "" and !String.match?(Enum.at(match, 0), ~r{/[^<>]*?/}) do
-        if String.contains?(Enum.at(match, 0), identifier) do
-          updated_content = String.replace(Enum.at(match, 0), ~r{[0-9,]+}, fn current ->
-            current_in_array = String.split(current, ",") |> Enum.map(&String.to_integer/1)
-            Enum.join(current_in_array ++ [acc_inner.counter], ",")
-          end)
-
-          concatinatedMatch = %{
-            identifier: identifier,
-            issue: rule["msg"],
-            content: Enum.at(match, 0),
-            dataAttributeId: acc_inner.counter,
-            contentWithIdentifier: updated_content,
-            wcag: rule["wcag"],
-            wcagClass: rule["wcagClass"],
-            url: rule["url"],
-            heading: rule["heading"],
-            description: rule["description"],
-            fixable: rule["fixable"]
-          }
-
-          update_state(
-            %{
-              counter: acc_inner.counter + 1,
-              matches: acc_inner.matches ++ [concatinatedMatch],
-              content: String.replace(acc_inner.content, Enum.at(match, 0), updated_content)
-            }, acc_inner
-          )
-        else
-          updated_content = String.replace(Enum.at(match, 0), ~r{(<[^\/>]*?)>}, "\\1 data-audit-error=\"#{acc_inner.counter}\">")
-
-          concatinatedMatch = %{
-            identifier: identifier,
-            issue: rule["msg"],
-            content: Enum.at(match, 0),
-            dataAttributeId: acc_inner.counter,
-            contentWithIdentifier: updated_content,
-            wcag: rule["wcag"],
-            wcagClass: rule["wcagClass"],
-            url: rule["url"],
-            heading: rule["heading"],
-            description: rule["description"],
-            fixable: rule["fixable"]
-          }
-
-          update_state(
-            %{
-              counter: acc_inner.counter + 1,
-              matches: acc_inner.matches ++ [concatinatedMatch],
-              content: String.replace(acc_inner.content, Enum.at(match, 0), updated_content)
-            }, acc_inner
-          )
+      linkId =
+        case Regex.scan(~r{#{regex_get_link}}, Enum.at(match, 0)) do
+          [[_, id | _]] -> id # Extract the correct part of the match
+          _ -> ""
         end
-      else
-        acc
-      end
 
+      if linkId == "" do
+        appendError(identifier, match, rule, acc_inner)
+      else
+        regex_check_link_with_id = Regex.replace(~r{refId}, regex_check_link, linkId)
+        found_instances = Regex.scan(~r{#{regex_check_link_with_id}}, acc.content) |> Enum.count()
+        if found_instances == 0 do
+          appendError(identifier, match, rule, acc_inner)
+        else
+          acc_inner
+        end
+      end
     end)
   end
 
@@ -240,6 +98,68 @@ defmodule HelloWeb.Audit do
       matches: result[:matches],
       content: result[:content]
     }
+  end
+
+  defp appendError(identifier, match, rule, acc_inner) do
+    if String.contains?(Enum.at(match, 0), "#{identifier}") do
+      currentErrorIds =
+        Regex.scan(~r{#{identifier}="([0-9,]+)"}, Enum.at(match, 0))
+        |> Enum.at(0, 0)
+        |> Enum.at(1, 0)
+        |> String.split(",")
+        |> Enum.map(&String.to_integer/1)
+
+      updated_data_attribute = "#{identifier}=\"#{Enum.join(currentErrorIds ++ [acc_inner.counter], ",")}\""
+      updated_content = String.replace(Enum.at(match, 0), ~r{#{identifier}="([0-9,]+)"}, updated_data_attribute)
+
+
+
+      concatinatedMatch = %{
+        identifier: "#{identifier}",
+        issue: rule["msg"],
+        content: Enum.at(match, 0),
+        dataAttributeId: acc_inner.counter,
+        contentWithIdentifier: updated_content,
+        wcag: rule["wcag"],
+        wcagClass: rule["wcagClass"],
+        url: rule["url"],
+        heading: rule["heading"],
+        description: rule["description"],
+        fixable: rule["fixable"]
+      }
+
+      update_state(
+        %{
+          counter: acc_inner.counter + 1,
+          matches: acc_inner.matches ++ [concatinatedMatch],
+          content: String.replace(acc_inner.content, Enum.at(match, 0), updated_content)
+        }, acc_inner
+      )
+    else
+      updated_content = String.replace(Enum.at(match, 0), ~r{(<[^\/>]*?)>}, "\\1 #{identifier}=\"#{acc_inner.counter}\">")
+
+      concatinatedMatch = %{
+        identifier: "#{identifier}",
+        issue: rule["msg"],
+        content: Enum.at(match, 0),
+        dataAttributeId: acc_inner.counter,
+        contentWithIdentifier: updated_content,
+        wcag: rule["wcag"],
+        wcagClass: rule["wcagClass"],
+        url: rule["url"],
+        heading: rule["heading"],
+        description: rule["description"],
+        fixable: rule["fixable"]
+      }
+
+      update_state(
+        %{
+          counter: acc_inner.counter + 1,
+          matches: acc_inner.matches ++ [concatinatedMatch],
+          content: String.replace(acc_inner.content, Enum.at(match, 0), updated_content)
+        }, acc_inner
+      )
+    end
   end
 
   defp addLineNumber(auditResult) do
@@ -256,7 +176,7 @@ defmodule HelloWeb.Audit do
         end
       end)
     end)
-    %{content: content, errorNumber: auditResult.counter, matches: new_matches}
+    %{success: true, html: content, numberOfErrors: auditResult.counter, matches: new_matches}
   end
 
 end

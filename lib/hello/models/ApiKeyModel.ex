@@ -22,4 +22,14 @@ defmodule Hello.ApiKey do
     query = from a in __MODULE__, where: a.user_id == ^user_id
     Repo.all(query)
   end
+
+  def get_by_key(api_key) do
+    query = from a in __MODULE__, where: a.api_key == ^api_key
+    Repo.one(query)
+  end
+
+  def get_all_keys() do
+    query = from a in __MODULE__
+    Repo.all(query)
+  end
 end

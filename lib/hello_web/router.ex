@@ -15,10 +15,11 @@ defmodule HelloWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  scope "/api", HelloWeb do
+  scope "/v1", HelloWeb do
     pipe_through :api
-    get "/audit/:id", PageController, :test
-    post "/audit/:id", PageController, :test
+
+    # get "/audit", AuditController, :doAudit
+    post "/audit", AuditController, :doAudit
 
     # Scope for the users
     get "/users", UserController, :users
@@ -28,6 +29,7 @@ defmodule HelloWeb.Router do
     # Scope for the api-keys
     get "/api_keys", KeyController, :api_keys
     post "/api_keys/create", KeyController, :create_api_key
+    delete "/api_keys/:id", KeyController, :delete_api_key
   end
 
   scope "/", HelloWeb do
@@ -37,6 +39,7 @@ defmodule HelloWeb.Router do
     get "/login", UserController, :login
     post "/register", UserController, :create_user
     post "/login", UserController, :check_credentials
+    get "/", PageController, :dashboard
     get "/dashboard", PageController, :dashboard
   end
 

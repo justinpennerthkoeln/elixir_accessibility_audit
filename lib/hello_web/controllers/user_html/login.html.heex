@@ -5,46 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <title>API - Register</title>
-    <style>
-        form {
-            display: flex;
-            flex-direction: column;
-            width: 300px;
-            margin: 0 auto;
-        }
-        label {
-            margin-top: 10px;
-        }
-        input {
-            margin-top: 5px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            margin-top: 10px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f0f0f0;
-            cursor: pointer;
-        }
-        p {
-            margin-top: 10px;
-            color: red;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/reset.css">
+    <link rel="stylesheet" href="/assets/css/root.css">
+    <link rel="stylesheet" href="/assets/app.css">
+    <link rel="stylesheet" href="/assets/css/header.css">
+    <link rel="stylesheet" href="/assets/css/login.css">
 </head>
 <body>
-    <form action="/login" method="post" id="login-form">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
-        <label for="email">E-Mail</label>
-        <input type="email" id="email">
-        <label for="password">Password</label>
-        <input type="password" id="password">
-        <p id="error-msg" hidden></p>
-        <button type="submit">Login</button>
-    </form>
+    <section id="login">
+        <h1>Login</h1>
+        <p>Login to add new API Keys</p>
+        <div id="login-form-container">
+            <form action="/login" method="post" id="login-form">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
+                <label for="email">E-Mail</label>
+                <input type="email" id="email">
+                <label for="password">Password</label>
+                <input type="password" id="password">
+                <p id="error-msg" hidden></p>
+                <div id="login-form-buttons">
+                    <button type="submit">Login</button>
+                    <p>or</p>
+                    <a href="/register">Go to Register</a>
+                </div>
+            </form>
+        </div>
+    </section>
     
 </body>
 <script>
