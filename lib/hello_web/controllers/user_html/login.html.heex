@@ -36,10 +36,9 @@
     const uuid = crypto.randomUUID();
 
     document.addEventListener('DOMContentLoaded', function () {
+        if(window.localStorage.getItem('token') == null) return;
         const token = JSON.parse(window.localStorage.getItem('token'));
-        if(token == null) {
-            return;
-        }
+
         if(token.timestamp + 3600000 < Date.now()) {
             window.localStorage.removeItem('token');
         } else {
@@ -68,7 +67,6 @@
         .then(response => response.json())
         .then(data => {
             if(data.success == true) {
-                console.log(data.user)
                 window.localStorage.setItem('token', JSON.stringify({sessionToken: uuid, timestamp: Date.now(), user_key: data.user.uuid}));
                 window.location.href = '/dashboard?user_key=' + data.user.uuid;
             } else {

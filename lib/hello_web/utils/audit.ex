@@ -111,13 +111,13 @@ defmodule HelloWeb.Audit do
 
       updated_data_attribute = "#{identifier}=\"#{Enum.join(currentErrorIds ++ [acc_inner.counter], ",")}\""
       updated_content = String.replace(Enum.at(match, 0), ~r{#{identifier}="([0-9,]+)"}, updated_data_attribute)
-
+      content_without_identifier = String.replace(updated_content, ~r{#{identifier}="([0-9,]+)"}, "")
 
 
       concatinatedMatch = %{
         identifier: "#{identifier}",
         issue: rule["msg"],
-        content: Enum.at(match, 0),
+        content: content_without_identifier,
         dataAttributeId: acc_inner.counter,
         contentWithIdentifier: updated_content,
         wcag: rule["wcag"],
@@ -137,11 +137,12 @@ defmodule HelloWeb.Audit do
       )
     else
       updated_content = String.replace(Enum.at(match, 0), ~r{(<[^\/>]*?)>}, "\\1 #{identifier}=\"#{acc_inner.counter}\">")
+      content_without_identifier = String.replace(updated_content, ~r{#{identifier}="([0-9,]+)"}, "")
 
       concatinatedMatch = %{
         identifier: "#{identifier}",
         issue: rule["msg"],
-        content: Enum.at(match, 0),
+        content: content_without_identifier,
         dataAttributeId: acc_inner.counter,
         contentWithIdentifier: updated_content,
         wcag: rule["wcag"],

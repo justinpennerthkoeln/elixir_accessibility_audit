@@ -17,14 +17,12 @@
         <div id="register-form-container">
             <form action="/register" method="post" id="register-form">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
-                <label for="Firstname">Firstname</label>
-                <input type="text" id="firstname">
-                <label for="Surname">Surname</label>
-                <input type="text" id="surname">
-                <label for="Passowrd">Password</label>
-                <input type="password" id="password">
+                <label for="username">Username</label>
+                <input type="text" id="username">
                 <label for="email">E-Mail</label>
                 <input type="email" id="email">
+                <label for="Passowrd">Password</label>
+                <input type="password" id="password">
                 <p id="error-msg" hidden></p>
                 <div id="register-form-buttons">
                     <button type="submit">Register</button>
@@ -51,10 +49,9 @@
 
     document.getElementById('register-form').addEventListener('submit', function (e) {
         e.preventDefault();
-        const firstname = document.getElementById('firstname').value;
-        const surname = document.getElementById('surname').value;
-        const password = document.getElementById('password').value;
+        const username = document.getElementById('username').value;
         const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
         // const plan = document.getElementById('plan').value;
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -68,10 +65,11 @@
                 'Content-Type': 'application/json',
                 'x-csrf-token': csrfToken,
             },
-            body: JSON.stringify({ firstname, surname, password, email }),
+            body: JSON.stringify({ username, password, email }),
         })
         .then(response => response.json())
         .then(data => {
+            console.log(data)
             if(data.success === false) {
                 errorVisualizer.hidden = false;
                 errorVisualizer.innerText = data.message;

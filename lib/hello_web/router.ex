@@ -14,33 +14,51 @@ defmodule HelloWeb.Router do
     plug :accepts, ["json"]
   end
 
-  # Other scopes may use custom stacks.
-  scope "/v1", HelloWeb do
-    pipe_through :api
-
-    # get "/audit", AuditController, :doAudit
-    post "/audit", AuditController, :doAudit
-
-    # Scope for the users
-    get "/users", UserController, :users
-    # get "/users/:user_key", UserController, :user
-    post "/users/create", UserController, :create_user
-
-    # Scope for the api-keys
-    get "/api_keys", KeyController, :api_keys
-    post "/api_keys/create", KeyController, :create_api_key
-    delete "/api_keys/:id", KeyController, :delete_api_key
-  end
-
   scope "/", HelloWeb do
     pipe_through :browser
 
     get "/register", UserController, :register
     get "/login", UserController, :login
+    get "/auth", UserController, :auth
     post "/register", UserController, :create_user
     post "/login", UserController, :check_credentials
     get "/", PageController, :dashboard
     get "/dashboard", PageController, :dashboard
+  end
+
+  scope "/v1", HelloWeb do
+    pipe_through :api
+
+    post "/audit", AuditController, :doAudit
+  end
+
+  scope "/v1/users", HelloWeb do
+    pipe_through :api
+
+    get "/", UserController, :users
+    post "/create", UserController, :create_user
+  end
+
+  scope "/v1/api_keys", HelloWeb do
+    pipe_through :api
+
+    get "/", KeyController, :api_keys
+    get "/:uuid", KeyController, :api_keys_by_uuid
+    post "/create", KeyController, :create_api_key
+    delete "/:id", KeyController, :delete_api_key
+  end
+
+  scope "/v1/projects", HelloWeb do
+    pipe_through :api
+
+    # get "/:uuid", UserController, :users
+    post "/create", ProjectController, :create_project
+    get "/all/:uuid", ProjectController, :get_projects
+    get "/:uuid", ProjectController, :get_project
+    post "/:uuid/add_member", ProjectController, :add_member
+    post "/:uuid/delete_member", ProjectController, :delete_member
+    post "/:uuid/add_issue", ProjectController, :add_issue
+    post "/:uuid/delete", ProjectController, :delete_project
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
