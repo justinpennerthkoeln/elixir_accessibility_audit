@@ -12,7 +12,7 @@ defmodule HelloWeb.ProjectController do
       changeset = Projects.changeset(%Projects{}, %{"name" => project_name})
       case Repo.insert(changeset) do
         {:ok, project} ->
-          user = Users.get_user_by_uuid(user_token["user_key"])
+          user = Users.get_user_by_uuid(user_token)
           projectId = project.id
           userId = user.id
           role = "owner"
@@ -20,7 +20,7 @@ defmodule HelloWeb.ProjectController do
           memberChangeset = Members.changeset(%Members{}, %{"user_id" => userId, "project_id" => projectId, "role" => role})
           case Repo.insert(memberChangeset) do
             {:ok, _member} ->
-              projects = get_projects(conn, %{"uuid" => user_token["user_key"]})
+              projects = get_projects(conn, %{"uuid" => user_token})
               conn
               |> put_status(:created)
               |> json(%{success: true, projects: projects})
@@ -47,6 +47,28 @@ defmodule HelloWeb.ProjectController do
     memberships = Repo.all(from(m in Hello.Members, where: m.user_id == ^user.id, select: m))
     project_ids = Enum.map(memberships, &(&1.project_id))
     projects = Repo.all(from(p in Hello.Projects, where: p.id in ^project_ids, select: p))
+    projects = Enum.map(projects, fn project ->
+      members = Repo.all(from(m in Hello.Members, where: m.project_id == ^project.id, select: m))
+      members = Enum.map(members, fn member ->
+        user = Repo.get(Hello.Users, member.user_id)
+        Map.put(member, :user, user)
+      end)
+      issues = Repo.all(from(i in Hello.Issues, where: i.project_id == ^project.id, select: i))
+      issues = Repo.preload(issues, :user)
+
+      project = Map.put(project, :members, members)
+      project = Map.put(project, :issues, issues)
+      project_json = %{
+        id: project.id,
+        uuid: project.uuid,
+        name: project.name,
+        inserted_at: project.inserted_at,
+        updated_at: project.updated_at,
+        members: Enum.map(members, &%{id: &1.id, uuid: &1.uuid, role: &1.role, inserted_at: &1.inserted_at, username: &1.user.username}),
+        issues: Enum.map(issues, &%{id: &1.id, uuid: &1.uuid, user_id: &1.user_id, project_id: &1.project_id, status: &1.status, filename: &1.filename, matches: &1.matches, matches_count: &1.matches_count, user: &1.user, inserted_at: &1.inserted_at, updated_at: &1.updated_at})
+      }
+      project_json
+    end)
     json(conn, projects)
   end
 
@@ -124,7 +146,7 @@ defmodule HelloWeb.ProjectController do
 
   def add_issue(conn, %{"uuid" => project_uuid, "user_token" => user_uuid, "audit_results" => audit_results, "filename" => filename}) do
     project = Repo.get_by(Hello.Projects, uuid: project_uuid)
-    user = Repo.get_by(Hello.Users, uuid: user_uuid["user_key"])
+    user = Repo.get_by(Hello.Users, uuid: user_uuid)
     matches = audit_results["matches"]
     |> Enum.map(fn match -> {match["dataAttributeId"], match} end)
     |> Enum.into(%{})

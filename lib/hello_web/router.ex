@@ -19,7 +19,7 @@ defmodule HelloWeb.Router do
 
     get "/register", UserController, :register
     get "/login", UserController, :login
-    get "/auth", UserController, :auth
+    get "/auth", UserController, :check_credentials
     post "/register", UserController, :create_user
     post "/login", UserController, :check_credentials
     get "/", PageController, :dashboard
