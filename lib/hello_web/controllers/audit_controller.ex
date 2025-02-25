@@ -28,10 +28,18 @@ defmodule HelloWeb.AuditController do
     end
   end
 
-  def generate_pdf(conn, %{"issues" => issues}) do
-    pdf_path = %HelloWeb.PDFKit{page_size: "A4"}
-                  |> HelloWeb.PDFKit.to_pdf(issues)
-                  |> String.replace("/tmp/", "")
+  def generate_pdf(conn, %{"issues" => issues, "project" => project}) do
+    pdf_path =
+      case project do
+        false ->
+          %HelloWeb.PDFKit{page_size: "A4"}
+          |> PDFKit.to_audit_pdf(issues)
+          |> String.replace("/tmp/", "")
+        _ ->
+          %HelloWeb.PDFKit{page_size: "A4"}
+          |> PDFKit.to_project_pdf(issues, project)
+          |> String.replace("/tmp/", "")
+      end
 
     json(conn, %{pdf_path: pdf_path})
   end
