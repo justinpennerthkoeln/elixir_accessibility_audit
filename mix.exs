@@ -57,7 +57,10 @@ defmodule Hello.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:pdf_generator, "~> 0.6.0"},
+      {:uuid, "~> 1.1"},
+      {:phoenix_html_helpers, "~> 1.0"},
     ]
   end
 

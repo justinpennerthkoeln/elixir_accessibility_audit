@@ -1,6 +1,7 @@
 defmodule HelloWeb.AuditController do
   use HelloWeb, :controller
   alias Hello.ApiKeys
+  alias HelloWeb.PDFKit
 
   def doAudit(conn, params) do
     rulesA = File.read!("assets/rules/rules_a.json") |> Jason.decode!()
@@ -25,5 +26,21 @@ defmodule HelloWeb.AuditController do
         json(conn, auditResult)
       end
     end
+  end
+
+  def generate_pdf(conn, %{"issues" => issues}) do
+    pdf_path = %HelloWeb.PDFKit{page_size: "A4"}
+                  |> HelloWeb.PDFKit.to_pdf(issues)
+                  |> String.replace("/tmp/", "")
+
+    json(conn, %{pdf_path: pdf_path})
+  end
+
+  def pdf(conn, %{"name" => name}) do
+    pdf_content = File.read!("/tmp/#{name}")
+
+    conn
+    |> put_resp_content_type("application/pdf")
+    |> send_resp(200, pdf_content)
   end
 end

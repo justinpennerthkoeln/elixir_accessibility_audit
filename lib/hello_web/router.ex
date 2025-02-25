@@ -30,6 +30,8 @@ defmodule HelloWeb.Router do
     pipe_through :api
 
     post "/audit", AuditController, :doAudit
+    post "/pdf", AuditController, :generate_pdf
+    get "/pdf/:name", AuditController, :pdf
   end
 
   scope "/v1/users", HelloWeb do
