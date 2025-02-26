@@ -30,37 +30,27 @@ defmodule HelloWeb.Router do
     pipe_through :api
 
     post "/audit", AuditController, :doAudit
-    post "/pdf", AuditController, :generate_pdf
-    get "/pdf/:name", AuditController, :pdf
-  end
 
-  scope "/v1/users", HelloWeb do
-    pipe_through :api
+    post "/pdf/gen_audit", PdfController, :generate_audit_pdf
+    post "/pdf/gen_project", PdfController, :generate_project_pdf
+    post "/pdf/gen_single_issue", PdfController, :generate_single_issue_pdf
+    get "/pdf/:name", PdfController, :pdf
 
-    get "/", UserController, :users
-    post "/create", UserController, :create_user
-  end
+    get "/users", UserController, :users
+    post "/users/create", UserController, :create_user
 
-  scope "/v1/api_keys", HelloWeb do
-    pipe_through :api
+    get "/api_keys", KeyController, :api_keys
+    get "/api_keys/:uuid", KeyController, :api_keys_by_uuid
+    post "/api_keys/create", KeyController, :create_api_key
+    delete "/api_keys/:id", KeyController, :delete_api_key
 
-    get "/", KeyController, :api_keys
-    get "/:uuid", KeyController, :api_keys_by_uuid
-    post "/create", KeyController, :create_api_key
-    delete "/:id", KeyController, :delete_api_key
-  end
-
-  scope "/v1/projects", HelloWeb do
-    pipe_through :api
-
-    # get "/:uuid", UserController, :users
-    post "/create", ProjectController, :create_project
-    get "/all/:uuid", ProjectController, :get_projects
-    get "/:uuid", ProjectController, :get_project
-    post "/:uuid/add_member", ProjectController, :add_member
-    post "/:uuid/delete_member", ProjectController, :delete_member
-    post "/:uuid/add_issue", ProjectController, :add_issue
-    post "/:uuid/delete", ProjectController, :delete_project
+    post "/projects/create", ProjectController, :create_project
+    get "/projects/all/:uuid", ProjectController, :get_projects
+    get "/projects/:uuid", ProjectController, :get_project
+    post "/projects/:uuid/add_member", ProjectController, :add_member
+    post "/projects/:uuid/delete_member", ProjectController, :delete_member
+    post "/projects/:uuid/add_issue", ProjectController, :add_issue
+    post "/projects/:uuid/delete", ProjectController, :delete_project
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
