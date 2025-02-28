@@ -180,4 +180,11 @@ defmodule HelloWeb.ProjectController do
     |> put_status(:ok)
     |> json(%{success: true})
   end
+
+  def delete_issue(conn, %{"uuid" => issue_uuid}) do
+    Repo.delete_all(from(i in Hello.Issues, where: i.uuid == ^issue_uuid))
+    conn
+    |> put_status(:ok)
+    |> json(%{success: true})
+  end
 end

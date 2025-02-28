@@ -1,0 +1,51 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.issue-title:not(:first-of-type) {
+  margin-top: 3rem;
+}
+
+.issue-title p {
+  margin-top: -1rem;
+}
+
+.match {
+  margin-bottom: 1rem;
+  padding: 0 2rem;
+  padding-bottom: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.30);
+  page-break-inside: avoid;
+}
+
+.match-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.description {
+  margin-top: -1rem;
+  margin-bottom: 1rem;
+  width: 70%;
+}
+
+.match > * {
+  margin: 0;
+  margin-top: 0.5rem;
+}
+
+.match a{
+  color: #7177ed;
+}
+
+.match a:hover{
+  color: #4d4f9e;
+}
+
+.match pre {
+  background-color: #f4f4f4;
+  padding: 1rem;
+  border-radius: 5px;
+  overflow-x: auto;
+  margin-bottom: 1rem
+}
