@@ -135,7 +135,7 @@ defmodule HelloWeb.Audit do
         }, acc_inner
       )
     else
-      updated_content = String.replace(Enum.at(match, 0), ~r{(<[^\/>]*?)>}, "\\1 #{identifier}=\"#{acc_inner.counter}\">")
+      updated_content = String.replace(Enum.at(match, 0), ~r{(<[^\>]*?)>}, "\\1 #{identifier}=\"#{acc_inner.counter}\">")
       content_without_identifier = String.replace(updated_content, ~r{(| )#{identifier}="([0-9,]+)"(| )}, "")
 
       concatinatedMatch = %{
