@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="base-path" content={ @base_path }>
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/assets/reset.css">
-    <link rel="stylesheet" href="/assets/root.css">
-    <link rel="stylesheet" href="/assets/app.css">
-    <link rel="stylesheet" href="/assets/dashboard.css">
+    <link rel="stylesheet" href={"#{@base_path}assets/reset.css"}>
+    <link rel="stylesheet" href={"#{@base_path}assets/root.css"}>
+    <link rel="stylesheet" href={"#{@base_path}assets/app.css"}>
+    <link rel="stylesheet" href={"#{@base_path}assets/dashboard.css"}>
 </head>
 <body>
     <!--
@@ -37,7 +38,7 @@
         <div id="api-keys">
             <div id="api-keys-header">
                 <h2>Your API keys</h2>
-                <form action="/api_keys" method="post" id="create-api-key">
+                <form  method="post" id="create-api-key">
                     <input type="hidden" name="user_id" value={@user_id}>
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
                     <button type="submit">Create New Key</button>
@@ -57,27 +58,29 @@
     </section>
 </body>
 <script>
+    const base_path = document.querySelector('meta[name="base-path"]').content;
+
     document.addEventListener('DOMContentLoaded', function () {
         const token = JSON.parse(window.localStorage.getItem('token'));
 
         if(token != null && token.timestamp + 3600000 > Date.now() && !window.location.search.includes(token.user_key)) {
-            window.location.href = '/dashboard?user_key=' + token.user_key;
+            window.location.href = base_path + 'dashboard?user_key=' + token.user_key;
         }
 
         if(token != null && token.timestamp + 3600000 < Date.now()) {
             window.localStorage.removeItem('token');
-            window.location.href = '/login';
+            window.location.href = base_path + 'login';
         }
 
         if(token == null) {
-            window.location.href = '/login';
+            window.location.href = base_path + 'login';
         }
 
         document.getElementById('create-api-key').addEventListener('submit', function (e) {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             const userId = document.querySelector('input[name="user_id"]').value;
             e.preventDefault();
-            fetch('/v1/api_keys/create', {
+            fetch(`${base_path}v1/api_keys/create`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -101,7 +104,7 @@
             btn.addEventListener('click', function (e) {
                 const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
                 const keyId = e.target.value;
-                fetch(`/v1/api_keys/${keyId}`, {
+                fetch(`${base_path}v1/api_keys/${keyId}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',

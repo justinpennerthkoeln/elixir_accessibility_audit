@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="base-path" content={ @base_path }>
     <title>API - Register</title>
-    <link rel="stylesheet" href="/assets/reset.css">
-    <link rel="stylesheet" href="/assets/root.css">
-    <link rel="stylesheet" href="/assets/app.css">
-    <link rel="stylesheet" href="/assets/register.css">
+    <link rel="stylesheet" href={"#{@base_path}assets/reset.css"}>
+    <link rel="stylesheet" href={"#{@base_path}assets/root.css"}>
+    <link rel="stylesheet" href={"#{@base_path}assets/app.css"}>
+    <link rel="stylesheet" href={"#{@base_path}assets/register.css"}>
 </head>
 <body>
     <section id="register">
         <h1>Register</h1>
         <p>Register to get access to the API</p>
         <div id="register-form-container">
-            <form action="/register" method="post" id="register-form">
+            <form method="post" id="register-form">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
                 <label for="username">Username</label>
                 <input type="text" id="username">
@@ -27,13 +28,16 @@
                 <div id="register-form-buttons">
                     <button type="submit">Register</button>
                     <p>or</p>
-                    <a href="/login">Go to Login</a>
+                    <a href={"#{@base_path}login"}>Go to Login</a>
                 </div>
             </form>
         </div>
     </section>
 </body>
 <script>
+
+    const base_path = document.querySelector('meta[name="base-path"]').content;
+
     document.addEventListener('DOMContentLoaded', function () {
         const token = JSON.parse(window.localStorage.getItem('token'));
         if(token == null) {
@@ -43,7 +47,7 @@
             window.localStorage.removeItem('token');
         } else {
             window.localStorage.setItem('token', JSON.stringify(token));
-            window.location.href = '/dashboard?user_key=' + token.user_key;
+            window.location.href = base_path + 'dashboard?user_key=' + token.user_key;
         }
     });
 
@@ -59,7 +63,7 @@
         
         errorVisualizer.hidden = true;
 
-        fetch('/register', {
+        fetch(`${base_path}register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -75,7 +79,7 @@
                 errorVisualizer.innerText = data.message;
                 return;
             }
-            window.location.href = '/login';
+            window.location.href = base_path + 'login';
         })
         .catch(error => {
             console.error(error);

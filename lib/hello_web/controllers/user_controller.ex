@@ -5,11 +5,11 @@ defmodule HelloWeb.UserController do
   import Ecto.Query
 
   def register(conn, _params) do
-    render(conn, :register, page_title: "Register", layout: false)
+    render(conn, :register, page_title: "Register", layout: false, base_path: System.get_env("BASE_PATH"))
   end
 
   def login(conn, _params) do
-    render(conn, :login, page_title: "Login", layout: false)
+    render(conn, :login, page_title: "Login", layout: false, base_path: System.get_env("BASE_PATH"))
   end
 
   def users(conn, %{"filter" => filter}) do

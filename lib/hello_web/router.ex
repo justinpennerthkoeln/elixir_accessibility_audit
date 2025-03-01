@@ -14,7 +14,7 @@ defmodule HelloWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "#{System.get_env("BASE_PATH")}", HelloWeb do
+  scope "/", HelloWeb do
     pipe_through :browser
 
     get "/register", UserController, :register
@@ -26,7 +26,7 @@ defmodule HelloWeb.Router do
     get "/dashboard", PageController, :dashboard
   end
 
-  scope "#{System.get_env("BASE_PATH")}v1", HelloWeb do
+  scope "/v1", HelloWeb do
     pipe_through :api
 
     post "/audit", AuditController, :doAudit

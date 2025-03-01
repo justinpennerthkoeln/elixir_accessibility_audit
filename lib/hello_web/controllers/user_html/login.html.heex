@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="base-path" content={ @base_path }>
     <title>API - Register</title>
-    <link rel="stylesheet" href="/assets/reset.css">
-    <link rel="stylesheet" href="/assets/root.css">
-    <link rel="stylesheet" href="/assets/app.css">
-    <link rel="stylesheet" href="/assets/login.css">
+    <link rel="stylesheet" href={"#{@base_path}assets/reset.css"}>
+    <link rel="stylesheet" href={"#{@base_path}assets/root.css"}>
+    <link rel="stylesheet" href={"#{@base_path}assets/app.css"}>
+    <link rel="stylesheet" href={"#{@base_path}assets/login.css"}>
 </head>
 <body>
     <section id="login">
         <h1>Login</h1>
         <p>Login to add new API Keys</p>
         <div id="login-form-container">
-            <form action="/login" method="post" id="login-form">
+            <form method="post" id="login-form">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
                 <label for="email">E-Mail</label>
                 <input type="email" id="email">
@@ -25,7 +26,7 @@
                 <div id="login-form-buttons">
                     <button type="submit">Login</button>
                     <p>or</p>
-                    <a href="/register">Go to Register</a>
+                    <a href={"#{@base_path}register"}>Go to Register</a>
                 </div>
             </form>
         </div>
@@ -34,6 +35,7 @@
 </body>
 <script>
     const uuid = crypto.randomUUID();
+    const base_path = document.querySelector('meta[name="base-path"]').content;
 
     document.addEventListener('DOMContentLoaded', function () {
         if(window.localStorage.getItem('token') == null) return;
@@ -43,7 +45,7 @@
             window.localStorage.removeItem('token');
         } else {
             window.localStorage.setItem('token', JSON.stringify(token));
-            window.location.href = '/dashboard?user_key=' + token.user_key;
+            window.location.href = base_path + 'dashboard?user_key=' + token.user_key;
         }
     });
 
@@ -56,7 +58,7 @@
         
         errorVisualizer.hidden = true;
 
-        fetch('/login', {
+        fetch(`${base_path}login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -68,7 +70,7 @@
         .then(data => {
             if(data.success == true) {
                 window.localStorage.setItem('token', JSON.stringify({sessionToken: uuid, timestamp: Date.now(), user_key: data.user.uuid}));
-                window.location.href = '/dashboard?user_key=' + data.user.uuid;
+                window.location.href = base_path + 'dashboard?user_key=' + data.user.uuid;
             } else {
                 errorVisualizer.innerText = data.message;
                 errorVisualizer.hidden = false;
