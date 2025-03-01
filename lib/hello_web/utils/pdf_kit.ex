@@ -110,7 +110,7 @@ defmodule HelloWeb.PDFKit do
                 <p class="description">#{match["description"]}</p>
                 <pre><code>#{safe_to_string(html_escape(match["content"]))}</code></pre>
                 <p>WCAG: #{match["wcag"]}</p>
-                <a href="#{match["url"]}">more info</a>
+                <a href="#{match["url"]}" target="_blank" rel="noopener noreferrer">more info</a>
               </div>
               """
             end) |> Enum.join("\n")}
@@ -162,7 +162,7 @@ defmodule HelloWeb.PDFKit do
                       <p class="description">#{match["description"]}</p>
                       <pre><code>#{safe_to_string(html_escape(match["content"]))}</code></pre>
                       <p>WCAG: #{match["wcag"]}</p>
-                      <a href="#{match["url"]}">more info</a>
+                      <a href="#{match["url"]}" target="_blank" rel="noopener noreferrer">more info</a>
                     </div>
                   """
                 end) |> Enum.join("\n")}
@@ -211,7 +211,7 @@ defmodule HelloWeb.PDFKit do
                 <p class="description">#{match["description"]}</p>
                 <pre><code>#{safe_to_string(html_escape(match["content"]))}</code></pre>
                 <p>WCAG: #{match["wcag"]}</p>
-                <a href="#{match["url"]}">more info</a>
+                <a href="#{match["url"]}" target="_blank" rel="noopener noreferrer">more info</a>
               </div>
               """
             end) |> Enum.join("\n")

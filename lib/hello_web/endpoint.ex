@@ -23,7 +23,7 @@ defmodule HelloWeb.Endpoint do
   at: "/",
   from: :hello,
   gzip: false,
-  only: ~w(css fonts images js favicon.ico robots.txt)
+  only: HelloWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

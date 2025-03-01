@@ -51,6 +51,8 @@ defmodule HelloWeb.Router do
     post "/projects/:uuid/delete_member", ProjectController, :delete_member
     post "/projects/:uuid/add_issue", ProjectController, :add_issue
     post "/projects/:uuid/delete", ProjectController, :delete_project
+
+    post "/issues/:uuid/delete", IssueController, :delete_issue
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

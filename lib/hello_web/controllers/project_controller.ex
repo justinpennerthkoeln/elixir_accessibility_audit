@@ -69,6 +69,7 @@ defmodule HelloWeb.ProjectController do
       }
       project_json
     end)
+
     json(conn, projects)
   end
 
@@ -90,6 +91,7 @@ defmodule HelloWeb.ProjectController do
 
     project = Map.put(project, :issues, issues)
 
+
     project_json = %{
       id: project.id,
       uuid: project.uuid,
@@ -99,7 +101,6 @@ defmodule HelloWeb.ProjectController do
       members: Enum.map(members, &%{id: &1.id, uuid: &1.uuid, role: &1.role, inserted_at: &1.inserted_at, username: &1.user.username}),
       issues: Enum.map(issues, &%{id: &1.id, uuid: &1.uuid, user_id: &1.user_id, project_id: &1.project_id, status: &1.status, filename: &1.filename, matches: &1.matches, matches_count: &1.matches_count, user: &1.user, inserted_at: &1.inserted_at, updated_at: &1.updated_at})
     }
-
     json(conn, project_json)
   end
 
@@ -181,10 +182,4 @@ defmodule HelloWeb.ProjectController do
     |> json(%{success: true})
   end
 
-  def delete_issue(conn, %{"uuid" => issue_uuid}) do
-    Repo.delete_all(from(i in Hello.Issues, where: i.uuid == ^issue_uuid))
-    conn
-    |> put_status(:ok)
-    |> json(%{success: true})
-  end
 end
