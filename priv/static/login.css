@@ -1,0 +1,27 @@
+#login {
+    width: 80%;
+    margin: 0 auto;
+    padding: var(--space-lg);
+}
+
+#login h1 {
+    font-size: var(--size-xxl);
+    color: var(--color-secondary);
+    font-weight: bold;
+}
+
+#login > p {
+    font-size: var(--size-m);
+    color: var(--color-secondary);
+    margin-bottom: var(--space-md);
+}
+
+/* API Keys */
+
+#login-form-container {
+    background-color: var(--color-tertiary);
+    border-radius: 8px;
+    border-color: var(--color-secondary);
+    box-shadow: var(--border-shadow);
+    padding-bottom: var(--space-sm);
+}

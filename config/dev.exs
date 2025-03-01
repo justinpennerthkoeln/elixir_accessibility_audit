@@ -2,14 +2,14 @@ import Config
 
 # Configure your database
 config :hello, Hello.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "elixir_api",
-  port: 5432,
-  stacktrace: true,
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+username: System.get_env("DB_USERNAME"),
+password: System.get_env("DB_PASSWORD"),
+hostname: System.get_env("DB_HOSTNAME"),
+database: System.get_env("DB_NAME"),
+port: String.to_integer(System.get_env("DB_PORT")),
+stacktrace: true,
+show_sensitive_data_on_connection_error: true,
+pool_size: String.to_integer(System.get_env("DB_POOL_SIZE") || "10")
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -24,7 +24,7 @@ config :hello, HelloWeb.Endpoint,
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "mbrieOpqOQknu6GyTBpNnvvgEnF4g7RBP9b8bwlzp1eev5Is/Pnnp4+DXrUhj1a0",
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:hello, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:hello, ~w(--watch)]}
