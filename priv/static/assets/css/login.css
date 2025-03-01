@@ -1,3 +1,15 @@
+button {
+    background-color: #333;
+    color: white;
+    font-size: var(--size-xs);
+    padding: 10px 30px;
+    border: none; 
+    border-radius: var(--border-radius-xxl); 
+    cursor: pointer; 
+    display: inline-block;
+    text-align: center;
+}
+
 #login {
     width: 80%;
     margin: 0 auto;
@@ -16,7 +28,37 @@
     margin-bottom: var(--space-md);
 }
 
-/* API Keys */
+#login-form {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-md);
+}
+
+#login-form label {
+    font-size: var(--size-m);
+    color: var(--color-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+#login-form input {
+    font-size: var(--size-sm);
+    color: var(--color-secondary);
+    padding: var(--space-xs);
+    border-radius: var(--border-radius);
+    border: var(--border-width) solid var(--color-quaternary);
+    margin-bottom: var(--space-md);
+}
+
+#login-form-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#login-form-buttons p {
+    margin: 0 var(--space-md);
+}
 
 #login-form-container {
     background-color: var(--color-tertiary);

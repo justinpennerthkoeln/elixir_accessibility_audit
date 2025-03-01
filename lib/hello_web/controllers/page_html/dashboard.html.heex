@@ -11,49 +11,17 @@
     <link rel="stylesheet" href={"#{@base_path}assets/css/dashboard.css"}>
 </head>
 <body>
-    <!--
-    <div id="heading-bar">
-        <div id="user-info">
-            <img src="/assets/user.svg" alt="User Icon">
-            <p>username</p>
-            <p>API Keys</p>
-            <a href="/logout" class="right">Logout</a>
-        </div>
-        <hr>
-        <nav>
-            <ul>
-                <li><a href="/dashboard">API Keys</a></li>
-                <li><a href="/analytics">Analytics</a></li>
-                <li><a href="/settings">Settings</a></li>
-            </ul>
-        </nav>
-        <hr>
-    </div>
-    -->
-
     <section id="dashboard">
-        <h1>API Keys</h1>
-        <p>Manage your API Keys here</p>
-        <div id="api-keys">
-            <div id="api-keys-header">
-                <h2>Your API keys</h2>
-                <form  method="post" id="create-api-key">
-                    <input type="hidden" name="user_id" value={@user_id}>
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}">
-                    <button type="submit">Create New Key</button>
-                </form>
+        <div id="dashboard-container">
+            <div>
+                <h1>Dashboard</h1>
+                <h2>Hello <%= @user.username %></h2>
             </div>
-
-            <hr>
-
-            <%= for api_key <- @api_keys do %>
-                <div class="api-key">
-                    <p><%= api_key.api_key %></p>
-                    <p><%= api_key.inserted_at %></p>
-                    <button value={api_key.id} class="del-btn">Delete</button>
-                </div>
-            <% end %>
+            <form action="" id="logout-form">
+                <button type="submit">Logout</button>
+            </form>
         </div>
+        <p>This site is under construction</p>
     </section>
 </body>
 <script>
@@ -75,50 +43,10 @@
             window.location.href = base_path + 'login';
         }
 
-        document.getElementById('create-api-key').addEventListener('submit', function (e) {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            const userId = document.querySelector('input[name="user_id"]').value;
+        document.getElementById('logout-form').addEventListener('submit', function (e) {
             e.preventDefault();
-            fetch(`${base_path}v1/api_keys/create`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-csrf-token': csrfToken
-                },
-                body: JSON.stringify({
-                    user_id: userId
-                })
-            }).then(response => response.json())
-            .then(data => {
-                if(data.success == true) {
-                    window.location.reload();
-                } else {
-                    alert("Something went wrong!");
-                    window.location.reload();
-                }
-            });
-        });
-
-        document.querySelectorAll('.del-btn').forEach(btn => {
-            btn.addEventListener('click', function (e) {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-                const keyId = e.target.value;
-                fetch(`${base_path}v1/api_keys/${keyId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-csrf-token': csrfToken
-                    }
-                }).then(response => response.json())
-                .then(data => {
-                    if(data.success == true) {
-                        e.target.parentElement.remove();
-                    } else {
-                        alert("Something went wrong!");
-                        window.location.reload();
-                    }
-                });
-            });
+            window.localStorage.removeItem('token');
+            window.location.href = base_path + 'login';
         });
     });
 

@@ -1,3 +1,15 @@
+button {
+    background-color: #333;
+    color: white;
+    font-size: var(--size-xs);
+    padding: 10px 30px;
+    border: none; 
+    border-radius: var(--border-radius-xxl); 
+    cursor: pointer; 
+    display: inline-block;
+    text-align: center;
+}
+
 #register {
     width: 80%;
     margin: 0 auto;
@@ -17,6 +29,27 @@
 }
 
 /* Form */
+
+#register-form {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-md);
+}
+
+#register-form label {
+    font-size: var(--size-m);
+    color: var(--color-secondary);
+    margin-bottom: var(--space-xs);
+}
+
+#register-form input {
+    font-size: var(--size-sm);
+    color: var(--color-secondary);
+    padding: var(--space-xs);
+    border-radius: var(--border-radius);
+    border: var(--border-width) solid var(--color-quaternary);
+    margin-bottom: var(--space-md);
+}
 
 #register-form-container {
     background-color: var(--color-tertiary);
@@ -40,16 +73,4 @@
 
 #register-form-buttons > * {
     margin: 0 var(--space-xs);
-}
-
-button {
-    background-color: #333;
-    color: white;
-    font-size: var(--size-xs);
-    padding: 10px 30px;
-    border: none; 
-    border-radius: var(--border-radius-xxl); 
-    cursor: pointer; 
-    display: inline-block;
-    text-align: center;
 }
