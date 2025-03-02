@@ -20,7 +20,11 @@ config :hello, HelloWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Hello.PubSub,
-  live_view: [signing_salt: "GLH1P212"]
+  live_view: [signing_salt: "GLH1P212"],
+  # Update the CORS plug configuration here
+  plug: [
+    {CORSPlug, origin: ["*"]} # Allow all origins, you can specify specific origins instead of "*"
+  ]
 
 # Configures the mailer
 #
