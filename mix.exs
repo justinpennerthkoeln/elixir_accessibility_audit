@@ -61,6 +61,7 @@ defmodule Hello.MixProject do
       {:pdf_generator, "~> 0.6.0"},
       {:uuid, "~> 1.1"},
       {:phoenix_html_helpers, "~> 1.0"},
+      {:cors_plug, "~> 3.0"}
     ]
   end
 

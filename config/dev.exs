@@ -28,7 +28,8 @@ config :hello, HelloWeb.Endpoint,
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:hello, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:hello, ~w(--watch)]}
-  ]
+  ],
+  plug: [CorsPlug, origin: "*"]
 
 # ## SSL Support
 #
