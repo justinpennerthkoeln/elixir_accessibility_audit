@@ -33,7 +33,9 @@ defmodule HelloWeb.Audit do
 
       acc
     end)
+    |> doFix()
     |> addLineNumber()
+
   end
 
   defp auditInternalHierarchy(rule, tag, acc) do
@@ -163,6 +165,7 @@ defmodule HelloWeb.Audit do
   end
 
   defp addLineNumber(auditResult) do
+    IO.inspect(auditResult)
     matches = auditResult.matches
     content = auditResult.content
     new_matches = Enum.map(matches, fn match ->
@@ -179,4 +182,29 @@ defmodule HelloWeb.Audit do
     %{success: true, html: content, numberOfErrors: auditResult.counter, matches: new_matches}
   end
 
+  defp doFix(auditResult) do
+    matches = auditResult.matches
+    new_matches = Enum.map(matches, fn match ->
+      if match.fixable do
+        case OpenAI.chat_completion([
+          model: "gpt-4o-mini",
+          messages: [
+            %{role: "user", content: "You will receive an HTML element with an error and the error description. You will correct the error and only return the corrected HTML element as a string and dont format it. Provide no additional output."},
+            %{role: "user", content: "HTML element with something that is wrong or missing: #{match.content}. The thing and the only thing you should change in the element: #{match.issue}. The error description: #{match.description}. And file is an HTML file."},
+            %{role: "user", content: "Think about the right replacement texts only use these where you are 100% sure about (e.g. if there is an input with a for attr use the for attr as text replacement etc.)."}
+          ]
+        ]) do
+          {:ok, response} ->
+            Map.put(match, :suggestion, Enum.at(response.choices, 0)["message"]["content"])
+          {:error, error} ->
+            match
+        end
+      else
+        match
+      end
+    end)
+    %{auditResult | matches: new_matches}
+  end
 end
+
+# This is the filename: ${filepath.split("/")[filepath.split("/").length - 1]}. This is the framework/language: ${(filepath.split("/")[filepath.split("/").length - 1]).split(".")[1]}

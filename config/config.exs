@@ -26,6 +26,9 @@ config :hello, HelloWeb.Endpoint,
     {CORSPlug, origin: ["*"]} # Allow all origins, you can specify specific origins instead of "*"
   ]
 
+config :openai,
+  api_key: System.get_env("OPEN_AI_API_KEY")
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

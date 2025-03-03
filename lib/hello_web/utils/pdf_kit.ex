@@ -57,8 +57,12 @@ defmodule HelloWeb.PDFKit do
           background-color: #f4f4f4;
           padding: 1rem;
           border-radius: 5px;
-          overflow-x: auto;
           margin-bottom: 1rem
+        }
+
+        .match pre code {
+          font-size: 0.8rem;
+          white-space: pre-wrap;
         }
 
         .match .description {
@@ -111,6 +115,13 @@ defmodule HelloWeb.PDFKit do
                 <pre><code>#{safe_to_string(html_escape(match["content"]))}</code></pre>
                 <p>WCAG: #{match["wcag"]}</p>
                 <a href="#{match["url"]}" target="_blank" rel="noopener noreferrer">more info</a>
+                #{ if(match["fixable"]) do
+                    """
+                    <h4>Suggestion</h4>
+                    <pre><code>#{safe_to_string(html_escape(match["suggestion"]))}</code></pre>
+                    """
+                  end
+                }
               </div>
               """
             end) |> Enum.join("\n")}
@@ -163,6 +174,13 @@ defmodule HelloWeb.PDFKit do
                       <pre><code>#{safe_to_string(html_escape(match["content"]))}</code></pre>
                       <p>WCAG: #{match["wcag"]}</p>
                       <a href="#{match["url"]}" target="_blank" rel="noopener noreferrer">more info</a>
+                      #{ if(match["fixable"]) do
+                          """
+                          <h4>Suggestion</h4>
+                          <pre><code>#{safe_to_string(html_escape(match["suggestion"]))}</code></pre>
+                          """
+                        end
+                      }
                     </div>
                   """
                 end) |> Enum.join("\n")}
@@ -212,6 +230,13 @@ defmodule HelloWeb.PDFKit do
                 <pre><code>#{safe_to_string(html_escape(match["content"]))}</code></pre>
                 <p>WCAG: #{match["wcag"]}</p>
                 <a href="#{match["url"]}" target="_blank" rel="noopener noreferrer">more info</a>
+                #{ if(match["fixable"]) do
+                    """
+                    <h4>Suggestion</h4>
+                    <pre><code>#{safe_to_string(html_escape(match["suggestion"]))}</code></pre>
+                    """
+                  end
+                }
               </div>
               """
             end) |> Enum.join("\n")
