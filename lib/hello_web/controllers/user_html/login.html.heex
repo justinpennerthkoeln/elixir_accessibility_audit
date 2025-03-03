@@ -35,6 +35,7 @@
 <script>
     const uuid = crypto.randomUUID();
     const base_path = document.querySelector('meta[name="base-path"]').content;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
     document.addEventListener('DOMContentLoaded', function () {
         if(window.localStorage.getItem('token') == null) return;
@@ -52,7 +53,6 @@
         e.preventDefault(); // Prevent default form submission
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
         const errorVisualizer = document.getElementById('error-msg');
         
         errorVisualizer.hidden = true;
