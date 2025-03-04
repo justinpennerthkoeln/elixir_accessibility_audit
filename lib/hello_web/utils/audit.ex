@@ -165,7 +165,6 @@ defmodule HelloWeb.Audit do
   end
 
   defp addLineNumber(auditResult) do
-    IO.inspect(auditResult)
     matches = auditResult.matches
     content = auditResult.content
     new_matches = Enum.map(matches, fn match ->

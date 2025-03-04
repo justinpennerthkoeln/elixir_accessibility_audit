@@ -48,8 +48,6 @@ defmodule HelloWeb.UserController do
   end
 
   def check_credentials(conn, %{"email" => email, "password" => password}) do
-    IO.inspect(email)
-    IO.inspect(password)
     query = from(a in Users, where: a.email == ^email and a.password == ^password, select: a)
     users = Repo.all(query)
     user = Enum.at(users, 0)
